@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <script>
+  function send() {
+     var form = document.getElementById('form1');
+         axios.post(`/axios/vo/practice1`, {name: form.name.value})
+        .then((res)=>{
+            console.log( res );
+            console.log( res.data + '회원가입 성공' );
+        });
+  }
+  </script>
+</head>
+<body>
+  <div>
+    <fieldset>
+      <form  id="form1"style="margin-right:20px;">
+        이름:<input type="text" name="name"><br>
+        성별:
+        여자<input type="radio" name="gender" value="여자">
+        남자<input type="radio" name="gender" value="남자"><br>
+        생년월일:<input type="date" name="birthday"><br>
+        관심사:
+        여행<input type="checkbox" name="hobby" value="여행">
+        패션<input type="checkbox" name="hobby" value="패션">
+        음식<input type="checkbox" name="hobby" value="음식">
+        <button type = "button" onclick="send()">post전송</button>
+      </form>
+    </fieldset>
+  </div>
+</body>
+</html>

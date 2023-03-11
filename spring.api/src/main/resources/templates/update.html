@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+  function update(){
+        var form = document.getElementById('form2');
+        axios.post(`/user/update`, {name: form.name.value, id: form.id.value, pw:form.pw.value})
+        .then((res)=>{
+        alert("회원정보 수정완료")
+            console.log( res );
+        });
+        }
+    </script>
+
+</head>
+<body>
+<form id="form2">
+  아이디<input type="text" name="id" value="">
+  비밀번호<input type="text" name="pw" value="">
+  이름<input type="text" name="name" value="">
+  <button type="button" onclick="update()">회원정보 수정 버튼</button>
+  <button type="button" onclick="delete()">회원정보 삭제 버튼</button>
+</body>
+</html>
