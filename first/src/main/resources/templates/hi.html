@@ -1,0 +1,17 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>
+        TITLE
+    </title>
+</head>
+<body>
+<!--<h1 th:text="${msg}">HI</h1>-->
+<!--<br>-->
+<!--<p th:utext="${utext}">p태그</p>-->
+<!--<br>-->
+<!--<span th:with ="msg2='안녕?'+${msg}" th:text="${msg2}"></span>-->
+
+<p th:style=${'color:green'} th:if="${age1 > 20} " th:text="'20세는 성인입니다.'"> age1</p>
+<p th:style=${'color:blue'} th:if="${age2 < 20} " th:text="'10대는 미성년자입니다.'" > age2</p>
+</body>
+</html>
