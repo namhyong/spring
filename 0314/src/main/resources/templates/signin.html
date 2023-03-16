@@ -7,9 +7,15 @@
   <script>
   function signin(){
     const form = document.getElementById("signin");
-    axios.get("/signin/user",`{userId:form.userId.value, password:form.userId.value}`)
-    .then(()=>{
-    document.location.href = '/login';
+    var data = {
+    id:form.id.value,
+     pw:form.pw.value,
+     name:form.name.value
+     }
+    axios.post(`/person/signin`,data)
+    .then((res)=>{
+    alert('회원 가입 완료!');
+    document.location.href = '/person/login';
     })
     }
   </script>
@@ -17,9 +23,10 @@
 <body>
 <h2> 회원가입</h2>
 <form id="signin">
-  아이디:<input name="userId" value="">
-  비밀번호:<input name="password" vlaue=""><br>
-  <button onclick="signin()">회원가입</button>
+  아이디:<input name="id" value="">
+  비밀번호:<input name="pw" vlaue="">
+  이름:<input name="name" ><br>
+  <button type="button" onclick="signin()">회원가입</button>
 </form>
 
 </body>

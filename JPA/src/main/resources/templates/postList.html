@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+
+  </script>
+</head>
+<body>
+<h5>글 목록</h5>
+  <table>
+    <tr>
+      <th>No.</th>
+      <th>작성자</th>
+      <th>제목</th>
+      <th>글</th>
+    </tr>
+  <tr th:each="post:${postList}" >
+    <td th:text="${post.getIndex_number()}">번호</td>
+    <td th:text="${post.getWriter()}">작성자</td>
+    <td th:text="${post.getTitle()}">제목</td>
+    <td th:text="${post.getMaintext()}">글</td>
+  <a href="/post/update:"></a>
+  </tr>
+  </table>
+</body>
+</html>

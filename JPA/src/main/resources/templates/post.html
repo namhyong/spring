@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    function add(){
+     const form =  document.getElementById("write")
+      const data = {
+        writer:form.writer.value,
+        title:form.title.value,
+        maintext:form.maintext.value
+      }
+      axios.post("/post", data)
+      .then((res)=>{
+      console.log(res)
+      alert("글 작성 완료")
+      document.location.href ="/postList"
+      })
+    }
+  </script>
+</head>
+<body>
+  <form id ="write">
+   작성자: <input name="writer"><br>
+    제목:<input name ="title"><br>
+    글:<input name="maintext"><br>
+    <button type="button" onclick="add()">글 등록</button>
+  </form>
+</body>
+</html>

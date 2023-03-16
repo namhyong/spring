@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sesac.sesacmybatis.domain.Person;
 import sesac.sesacmybatis.domain.User;
 import sesac.sesacmybatis.dto.UserDTO;
 
@@ -21,6 +22,5 @@ public interface MainMapper {
 @Insert("insert into user(name,nickname) values(#{name},#{nickname})")
     void insertUser(User user);
 
-@Insert("insert into userinfo(userId, password) values(#{userId},#{password})")
-    void signin(User user);
+
 }

@@ -5,23 +5,34 @@
   <title>Title</title>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script>
-  function signin(){
-    const form = document.getElementById("signin");
-    axios.post("/signin/user",`{userId:form.userId.value, password:form.userId.value}`)
+  function login(){
+    const form = document.getElementById("login");
+    axios.post("/person/login",{id:form.id.value, pw:form.pw.value})
     .then((res)=>{
-    console.log(res.data)
-    window.location.href("/login")
+      console.log(res.data)
+      if(res.data != false){
+      alert('로그인 성공!');
+      <!-- 아래 form에 action과 method 속성을 추가해서 일반 POST폼 전송을 하겠다.-->
+      form.action = "/person/info"; //<form action="/person/info">
+      form.method="post"; //<form method="post" action="/person/info">
+      form.submit();
+    }else{
+      alert('로그인 실패');
+      form.reset();
+     }
     })
     }
   </script>
 </head>
 <body>
 <h2> 로그인</h2>
-<form id="sigin">
-  아이디:<input name="userId" value="">
-  비밀번호:<input name="password" vlaue=""><br>
-  <button onclick="login()">로그인</button>
+<form id="login">
+  아이디:<input name="id" value="">
+  비밀번호:<input name="pw" vlaue=""><br>
+  <button type="button" onclick="login()">로그인</button>
 </form>
 
 </body>
 </html>
+
+<!-- 로그인 -> axios 요청 보내고 -> 응답 -> info로 post 전송 -->

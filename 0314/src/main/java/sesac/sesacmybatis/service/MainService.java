@@ -2,7 +2,9 @@ package sesac.sesacmybatis.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sesac.sesacmybatis.domain.Person;
 import sesac.sesacmybatis.domain.User;
+import sesac.sesacmybatis.dto.PersonDTO;
 import sesac.sesacmybatis.dto.UserDTO;
 import sesac.sesacmybatis.mapper.MainMapper;
 
@@ -35,10 +37,5 @@ public class MainService {
     }
     public void addUser(User user) {mainMapper.insertUser(user);}
 
-    public void setUser(UserDTO dto) {
-        User user = new User();
-        user.setUserId(dto.getUserId());
-        user.setPassword(dto.getPassword());
-        mainMapper.signin(user);
-    }
+
 }
