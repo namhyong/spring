@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+  function signin(){
+    const form = document.getElementById("signin");
+    var data = {
+    id:form.id.value,
+     pw:form.pw.value,
+     name:form.name.value
+     }
+    axios.post(`/person/signin`,data)
+    .then((res)=>{
+    alert('회원 가입 완료!');
+    document.location.href = '/person/login';
+    })
+    }
+  </script>
+</head>
+<body>
+<h2> 회원가입</h2>
+<form id="signin">
+  아이디:<input name="id" value="">
+  비밀번호:<input name="pw" vlaue="">
+  이름:<input name="name" ><br>
+  <button type="button" onclick="signin()">회원가입</button>
+</form>
+
+</body>
+</html>
