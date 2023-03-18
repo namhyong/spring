@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MainService {
@@ -38,4 +39,29 @@ public class MainService {
         }
         return postList;
     }
+
+    public PostDTO showDetail(int index_number){
+        Optional<PostEntity> post = postRepository.findById(index_number);
+        PostDTO postDTO = new PostDTO();
+        postDTO.setWriter(post.get().getWriter());
+        postDTO.setMaintext(post.get().getMaintext());
+        postDTO.setTitle(post.get().getTitle());
+        postDTO.setIndex_number(post.get().getIndex_number());
+      return postDTO;
+
+    }
+
+    public void editPost(PostDTO postDTO){
+        PostEntity post = new PostEntity();
+        post.setIndex_number(postDTO.getIndex_number());
+        post.setWriter(postDTO.getWriter());
+        post.setMaintext(postDTO.getMaintext());
+        post.setTitle(postDTO.getTitle());
+        postRepository.save(post);
+    }
+
+    public void deletePost(PostDTO postDTO){
+    postRepository.deleteById(postDTO.getIndex_number());
+    }
+
 }

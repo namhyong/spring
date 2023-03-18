@@ -5,10 +5,7 @@ import JPA.demo.service.MainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
@@ -33,5 +30,24 @@ public class MainController {
         ArrayList<PostDTO> postList = (ArrayList<PostDTO>) mainService.findPost();
         model.addAttribute("postList", postList);
         return "postList";
+    }
+    @GetMapping("/postDetail/{index_number}")
+    public String postDetail(@PathVariable int index_number, Model model){
+        PostDTO postDetail = mainService.showDetail(index_number);
+        model.addAttribute("postDetail", postDetail);
+        return "detail";
+    }
+
+    @PostMapping("/edit")
+    @ResponseBody
+    public String editPost(@RequestBody PostDTO postDTO){
+        mainService.editPost(postDTO);
+        return"";
+    }
+    @PostMapping("/delete")
+    @ResponseBody
+    public String deletePost(@RequestBody PostDTO postDTO){
+        mainService.deletePost(postDTO);
+        return "";
     }
 }
