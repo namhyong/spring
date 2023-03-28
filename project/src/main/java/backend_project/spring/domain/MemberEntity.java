@@ -11,7 +11,7 @@ import javax.persistence.Table;
 @Setter
 @Entity
 @Table(name="user")
-public class MainDomain {
+public class MemberEntity {
     @Id
     @Column(length=50,nullable=false)
     private String id;

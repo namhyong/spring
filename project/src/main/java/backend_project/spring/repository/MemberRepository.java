@@ -1,11 +1,11 @@
 package backend_project.spring.repository;
 
-import backend_project.spring.domain.MainDomain;
+import backend_project.spring.domain.MemberEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MainRepository extends JpaRepository<MainDomain, String> {
+public interface MemberRepository extends JpaRepository<MemberEntity, String> {
 
 
 }
