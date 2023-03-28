@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Board</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+  <script>
+    function updatePost(){
+
+      var form = document.getElementById('form_post');
+      var data = {
+        index_number: form.index_number.value,
+        title: form.title.value,
+        writer: form.writer.value,
+        maintext: form.maintext.value
+      };
+
+      axios.post('/edit',data)
+      .then((res) => {
+        alert('수정이 완료되었습니다.');
+        document.location.href="/postList";
+      });
+    }
+
+    function deletePost(){
+      var form = document.getElementById('form_post');
+      axios.post('/delete',{index_number: form.index_number.value})
+      .then((res) => {
+        alert('삭제가 완료되었습니다.');
+        document.location.href="/postList";
+      });
+    }
+  </script>
+</head>
+<body>
+<form id="form_post">
+  글번호  <input readonly name="index_number"  th:value="${postDetail.getIndex_number()}"></input>
+  <br>
+  <span>제목 : </span> <input type="text" name="title" th:value="${postDetail.getTitle()}">
+  <br>
+  <span>작성자 : </span> <input type="text" name="writer" th:value="${postDetail.getWriter()}">
+  <br>
+  <span>내용 : </span>
+  <textarea name="maintext" th:text="${postDetail.getMaintext()}"></textarea>
+  <button type="button" onclick="updatePost()">수정</button>
+  <button type="button" onclick="deletePost()">삭제</button>
+</form>
+</body>
+</html>
