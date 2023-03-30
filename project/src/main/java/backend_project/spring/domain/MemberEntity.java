@@ -1,11 +1,8 @@
 package backend_project.spring.domain;
 import lombok.Getter;
 import lombok.Setter;
-import javax.persistence.Id;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -13,12 +10,15 @@ import javax.persistence.Table;
 @Table(name="user")
 public class MemberEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(length=50,nullable=false)
-    private String id;
-    @Column(length=50,nullable=false)
+    private int id;
+    @Column(length=1000,nullable=false)
     private String pw;
     @Column(length=10,nullable=false)
     private String name;
 
+    @Column(length=50, nullable = false)
+    private  String email;
 
 }

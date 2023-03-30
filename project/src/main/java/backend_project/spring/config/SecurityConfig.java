@@ -32,22 +32,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception{
         http.authorizeRequests()
-                .antMatchers("/member/**").authenticated()
-                .antMatchers("/admin/**").authenticated()
-                .antMatchers("/**").authenticated();
+                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/user/myinfo").hasRole("MEMBER")
+                .antMatchers("/**").permitAll();
 
         http.formLogin()
-                .loginPage("/login")
-                .defaultSuccessUrl("/")
+                .loginPage("/user/login")
+                .defaultSuccessUrl("/user/login/result")
                 .permitAll();
 
         http.logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/")
+                .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
+                .logoutSuccessUrl("/user/logout/result")
+                .invalidateHttpSession(true)
                 .permitAll();
 
         http.exceptionHandling()
-                .accessDeniedPage("/denied");
+                .accessDeniedPage("/user/denied");
     }
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws  Exception{
