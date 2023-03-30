@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,19 +33,24 @@ public class MemberService implements UserDetailsService {
         memberEntity.setName(memberDto.getName());
         memberEntity.setEmail(memberDto.getEmail());
         memberRepository.save(memberEntity);
-
     }
     @Override
-    public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
-        Optional<MemberEntity> userEntityWrapper = memberRepository.findByEmail(userEmail);
-        MemberEntity userEntity = userEntityWrapper.get();
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        System.out.println("유저 이메일"+ email);
+        Optional<MemberEntity> userEntityWrapper = memberRepository.findByEmail(email);
 
-        ArrayList <GrantedAuthority> authorities = new ArrayList<>();
-        if(("admin@example.com").equals(userEmail)){
+        MemberEntity userEntity = userEntityWrapper.get();
+        System.out.println(userEntity.getName());
+
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        if(("admin@example.com").equals(email)){
             authorities.add(new SimpleGrantedAuthority(Role.ADMIN.getValue()));
         }else{
             authorities.add(new SimpleGrantedAuthority(Role.MEMBER.getValue()));
         }
+        System.out.println(userEntity.getPw());
+
+        System.out.println(authorities);
         return new User(userEntity.getEmail(),userEntity.getPw(), authorities);
 
     }

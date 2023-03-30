@@ -33,12 +33,16 @@ public String dispLogin(){
 }
 @GetMapping("/user/login/result")
 public String dispLoginResult(){
-    return "/loginSuccess";
+    return "/loginSuccesful";
 }
+    @GetMapping("/user/logout/result")
+    public String dispLogout() {
+        return "/logout";
+    }
 
-@GetMapping("/user/logout/result")
-    public String disDenied(){
-    return "/denied";
+@GetMapping("/user/denied")
+public String dispDenied() {
+        return "/denied";
 }
 
 @GetMapping("/user/info")
