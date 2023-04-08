@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script th:inline="javascript">
+        axios.get("/user/information",{
+
+        })
+    </script>
+</head>
+<body>
+  <h1> 내정보 확인 페이지 입니다.
+      이름<p sec:authentication="principal"><p>
+
+</body>
+</html>

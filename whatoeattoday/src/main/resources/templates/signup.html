@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+<!--    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>-->
+<!--    <script>-->
+<!--        const form = document.getElementById("form_value");-->
+<!--        axios.post("/user/signup",{-->
+<!--            email: form.email.value,-->
+<!--            password: form.password.value,-->
+<!--            name:form.name.value-->
+<!--            }-->
+<!--            .then(()=>{-->
+<!--                window.location.href="/user/login"-->
+<!--            })-->
+<!--        )-->
+<!--    </script>-->
+</head>
+<body>
+    <h1>회원 가입</h1>
+    <hr>
+
+    <form th:action="@{/user/signup}" method="post" id="form_value">
+<!--    <form  id="form_value">-->
+        <input type="text" name="email" placeholder="이메일을 입력해주세요">
+        <input type="password" name="password" placeholder="비밀번호">
+        <input type="text" name="name" placeholder="이름">
+        <button type="button">가입하기</button>
+    </form>
+</body>
+</html>
