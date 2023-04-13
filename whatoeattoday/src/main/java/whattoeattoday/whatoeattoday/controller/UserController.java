@@ -1,6 +1,7 @@
 package whattoeattoday.whatoeattoday.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,11 +16,12 @@ import whattoeattoday.whatoeattoday.jwt.JwtProvider;
 import whattoeattoday.whatoeattoday.service.UserService;
 
 @Controller
+@RequiredArgsConstructor
 public class UserController {
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private JwtProvider jwtProvider;
+
+    private final UserService userService;
+
+    private final JwtProvider jwtProvider;
 
 @PostMapping("/user/signup")
 @ResponseBody

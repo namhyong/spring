@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import whattoeattoday.whatoeattoday.dto.Response;
@@ -14,6 +15,7 @@ import java.util.Base64;
 import java.util.Date;
 
 @Component
+@RequiredArgsConstructor
 public class JwtProvider {
 private ObjectMapper objectMapper;
     @Value("${spring.jwt.secret}")
@@ -43,6 +45,10 @@ private ObjectMapper objectMapper;
                 .setExpiration(new Date(date.getTime() + atkValidity))
                 .signWith(SignatureAlgorithm.HS256, jwtSecret)
                 .compact();
+    }
+    public String getSubject(String atk) throws  JsonProcessingException{
+        String subjectStr = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(atk).getBody().getSubject();
+        return subjectStr;
     }
 
 }

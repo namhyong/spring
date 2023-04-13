@@ -1,6 +1,7 @@
 package whattoeattoday.whatoeattoday.config;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,13 +14,20 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import whattoeattoday.whatoeattoday.jwt.JwtAuthenticationFilter;
+import whattoeattoday.whatoeattoday.jwt.JwtProvider;
+import whattoeattoday.whatoeattoday.jwt.UserInterceptor;
 import whattoeattoday.whatoeattoday.service.UserService;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
-    private UserService userService;
+
+    private final UserService userService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtProvider jwtProvider;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -39,6 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/")
                 .permitAll();
         http.csrf().disable();
+
 //        http.exceptionHandling()
 //                .authenticationEntryPoint(jwtAuthenticationEntryPoint);
 //                .accessDeniedHandler(jwtAccessDeniedHandler);
@@ -49,6 +58,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 //        http.headers().frameOptions().sameOrigin();
     }
-
-
 }
