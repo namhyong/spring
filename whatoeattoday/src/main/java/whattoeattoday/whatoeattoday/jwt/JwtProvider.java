@@ -2,13 +2,12 @@ package whattoeattoday.whatoeattoday.jwt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import whattoeattoday.whatoeattoday.dto.Response;
+import whattoeattoday.whatoeattoday.exception.ApiException;
 
 import javax.annotation.PostConstruct;
 import java.util.Base64;
@@ -46,9 +45,35 @@ private ObjectMapper objectMapper;
                 .signWith(SignatureAlgorithm.HS256, jwtSecret)
                 .compact();
     }
-    public String getSubject(String atk) throws  JsonProcessingException{
-        String subjectStr = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(atk).getBody().getSubject();
-        return subjectStr;
+    public String extractToken(String authorizationHeader){
+        return authorizationHeader.equals("")
+                ? authorizationHeader : authorizationHeader.substring("Bearer".length());
     }
+    public boolean isUsable(String token){
+        if(token.equals("")){
+            throw new ApiException();
+        }
+        try{
+            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+            return true;
+        }
+        /* 토크이 유효하지 않을 때*/
+        catch (MalformedJwtException e){
+            throw new ApiException();
+        }
+        /* 토크이 만료 됐을 때*/
+        catch (ExpiredJwtException e){
+            return false;
+        }
+    }
+    public Subject extractAllClaims(String token) throws ExpiredJwtException {
+        Claims claims = Jwts.parser().setSigningKey(jwtSecret)
+                .parseClaimsJws(token)
+                .getBody();
+        Subject subject = new Subject();
+        subject.setId((Integer) claims.get("id"));
+        subject.setEmail((String) claims.get("email"));
+        return subject;
 
+    }
 }

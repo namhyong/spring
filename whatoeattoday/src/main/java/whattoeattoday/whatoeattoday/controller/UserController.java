@@ -15,6 +15,8 @@ import whattoeattoday.whatoeattoday.dto.UserDto;
 import whattoeattoday.whatoeattoday.jwt.JwtProvider;
 import whattoeattoday.whatoeattoday.service.UserService;
 
+import java.net.http.HttpHeaders;
+
 @Controller
 @RequiredArgsConstructor
 public class UserController {
@@ -39,5 +41,10 @@ public class UserController {
     public TokenResponse login(@RequestBody LoginRequest loginRequest) throws JsonProcessingException {
     Response response = userService.login(loginRequest);
     return jwtProvider.createTokenByLoigin(response);
+    }
+
+    @GetMapping(value = "/user/myPage")
+    public String userDetail(){
+    return "good!";
     }
 }
