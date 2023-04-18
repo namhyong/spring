@@ -14,7 +14,7 @@ public class Subject {
     private String name;
     private String type;
 
-    public static Subject atk( int id, String email, String name, String type){
+    public static Subject atk( int id, String email, String name ){
         Subject sub = new Subject();
         sub.setId(id);
         sub.setEmail(email);
@@ -22,11 +22,8 @@ public class Subject {
         sub.setType("ATK");
     return sub;
         }
-    public static Subject rtk(int id, String email, String name, String type) {
+    public static Subject rtk() {
         Subject sub2 = new Subject();
-        sub2.setId(id);
-        sub2.setEmail(email);
-        sub2.setName(name);
         sub2.setType("RTK");
         return sub2;
     }
