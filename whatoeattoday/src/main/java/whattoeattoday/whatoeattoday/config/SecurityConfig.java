@@ -38,8 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected  void configure(HttpSecurity http) throws  Exception{
         http.authorizeRequests()
-                .antMatchers("/user/myinfo").authenticated()
-                .antMatchers("/**").permitAll();
+                .antMatchers("/user/login","user/signup").permitAll()
+                .anyRequest().authenticated();
         http.logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/")
@@ -50,7 +50,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider,userService), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider,userService), UsernamePasswordAuthenticationFilter.class)
+                .formLogin().disable();
+
 //        http.exceptionHandling()
 //                .authenticationEntryPoint(jwtAuthenticationEntryPoint);
 //                .accessDeniedHandler(jwtAccessDeniedHandler);

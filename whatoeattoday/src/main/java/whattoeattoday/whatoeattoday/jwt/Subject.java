@@ -22,8 +22,11 @@ public class Subject {
         sub.setType("ATK");
     return sub;
         }
-    public static Subject rtk() {
+    public static Subject rtk(int id, String email, String name) {
         Subject sub2 = new Subject();
+        sub2.setId(id);
+        sub2.setEmail(email);
+        sub2.setName(name);
         sub2.setType("RTK");
         return sub2;
     }

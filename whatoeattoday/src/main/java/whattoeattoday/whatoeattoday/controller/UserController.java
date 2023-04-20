@@ -17,6 +17,7 @@ import whattoeattoday.whatoeattoday.jwt.JwtProvider;
 import whattoeattoday.whatoeattoday.jwt.UserDeatils;
 import whattoeattoday.whatoeattoday.service.UserService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.http.HttpHeaders;
 
 @Controller
@@ -52,7 +53,8 @@ public class UserController {
     }
 
     @GetMapping("/user/reissue")
-    public TokenResponse reissue( TokenResponse tokenResponse) throws JsonProcessingException{
-    return jwtProvider.reissuedAtk(tokenResponse);
+    public TokenResponse reissue(HttpServletRequest request) throws JsonProcessingException{
+        String atk = request.getHeader("Authorization").substring("Bearer ".length());
+    return jwtProvider.reissuedAtk(atk);
     }
 }

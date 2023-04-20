@@ -25,16 +25,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.userService= userService;
     }
     @Override
-    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException{
+    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+        //로그인으로 오는 요청은 필터 무시(해당 주소에대한 request,response처리)
+        request.getRequestDispatcher("/user/login").forward(request, response);
+
+        // header에서 atk 분리 과정
         String authorization = jwtProvider.extractToken(request.getHeader("Authorization"));
-        if( authorization!= null && jwtProvider.isUsable(authorization)){
+        System.out.println("atk" + request.getHeader("Authorization"));
+        if (authorization != null && jwtProvider.isUsable(authorization)) {
+            // header의 atk를 파싱하는 과정
             Subject subject = jwtProvider.extractAllClaims(authorization);
+            System.out.println("파싱 데이터:" + subject.getEmail());
             UserDetails userDetails = userService.loadUserByUsername(subject.getEmail());
-                SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-                        userDetails, "", userDetails.getAuthorities())
-                );
+            SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
+                    userDetails, "", userDetails.getAuthorities())
+            );
+            chain.doFilter(request, response);
+        }else{
+            jwtProvider.reissuedAtk(authorization);
         }
-        chain.doFilter(request,response);
     }
 }
 //    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

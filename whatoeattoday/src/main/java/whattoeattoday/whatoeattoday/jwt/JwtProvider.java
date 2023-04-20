@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class JwtProvider {
 private ObjectMapper objectMapper;
 private final RedisDto redisDto;
+
 private final RedisTemplate redisTemplate;
     @Value("${spring.jwt.secret}")
     private String jwtSecret;
@@ -33,16 +34,16 @@ private final RedisTemplate redisTemplate;
     @Value("${spring.jwt.refresh-token-validity-seconds}")
     private Long rtkValidity;
 
-    @PostConstruct
+@PostConstruct
     protected void init(){
         jwtSecret = Base64.getEncoder().encodeToString(jwtSecret.getBytes());
     }
     public TokenResponse createTokenByLoigin(Response response) throws JsonProcessingException {
         Subject atkJwt = Subject.atk(response.getId(),response.getEmail(),response.getName());
-        Subject rtkJwt = Subject.rtk();
+        Subject rtkJwt = Subject.rtk(response.getId(),response.getEmail(),response.getName());
         String atk = createToken(atkJwt, atkValidity);
         String rtk = createToken(rtkJwt, rtkValidity);
-        redisTemplate.opsForValue().set(response.getEmail(),rtk, rtkValidity, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(atk,rtk, rtkValidity, TimeUnit.MILLISECONDS);
         return new TokenResponse(atk, rtk);
     }
     private String createToken(Subject subject, Long atkValidity) throws  JsonProcessingException{
@@ -50,25 +51,27 @@ private final RedisTemplate redisTemplate;
         //        String JwtStr = objectMapper.writeValueAsString(subject);
         Claims claims = Jwts.claims()
                 .setSubject(subject.getEmail())
-                .setIssuer(subject.getName());
+                .setIssuer(subject.getName())
+                .setId(String.valueOf(subject.getId()));
         Date date = new Date();
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(date)
                 .setExpiration(new Date(date.getTime() + atkValidity))
-                .signWith(SignatureAlgorithm.HS256, jwtSecret)
+                .signWith(SignatureAlgorithm.HS256, jwtSecret.getBytes())
                 .compact();
     }
     public String extractToken(String authorizationHeader){
         return authorizationHeader.equals("")
-                ? authorizationHeader : authorizationHeader.substring("Bearer".length());
+                ? authorizationHeader : authorizationHeader.substring("Bearer ".length());
+
     }
     public boolean isUsable(String token){
         if(token.equals("")){
             throw new ApiException();
         }
         try{
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+            Jwts.parser().setSigningKey(jwtSecret.getBytes()).parseClaimsJws(token);
             return true;
         }
         /* 토크이 유효하지 않을 때*/
@@ -81,25 +84,31 @@ private final RedisTemplate redisTemplate;
         }
     }
     public Subject extractAllClaims(String token) throws ExpiredJwtException {
-        Claims claims = Jwts.parser().setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
+    System.out.println("토큰"+token);
+        String claims = Jwts.parser().setSigningKey(jwtSecret.getBytes())
+                .parseClaimsJws(token).getBody().getSubject();
         Subject subject = new Subject();
-        subject.setId((Integer) claims.get("id"));
-        subject.setEmail((String) claims.get("email"));
+        subject.setEmail(claims);
+        System.out.println("섭젝"+ subject.getEmail());
+//        subject.setName((String) claims.get("iss"));
+        //subject.setEmail();
+        //System.out.println((String)claims.get("id"));
+//        subject.setId(Integer.valueOf((String)claims.get("jti")));
         return subject;
 
     }
-    public TokenResponse reissuedAtk(TokenResponse tokenResponse)throws JsonProcessingException{
-        Subject atk = extractAllClaims(tokenResponse.getAtk());
+    public TokenResponse reissuedAtk(String atk)throws JsonProcessingException{
         if(Objects.isNull(atk)) throw new Error("인증 정보가 만료되었습니다.");
-        String refreshToken = (String)redisTemplate.opsForValue().get(atk.getEmail());
+        System.out.println("atk "+atk);
+        String refreshToken = (String)redisTemplate.opsForValue().get(atk);
+        System.out.println("rtk "+refreshToken);
         if(refreshToken  == null) throw new Error("리프레시 토큰이 없습니다.");
-        if(!refreshToken.equals(tokenResponse.getRtk())) throw new Error("refresh토큰의 정보가 일치하지 않습니다.");
-        Subject newAtkInfo = Subject.atk(atk.getId(),atk.getEmail(),atk.getName());
+        Subject rtkInfo = extractAllClaims(refreshToken);
+        Subject newAtkInfo = Subject.atk(rtkInfo.getId(),rtkInfo.getEmail(),rtkInfo.getName());
         String newAtk = createToken(newAtkInfo, atkValidity);
-        redisTemplate.opsForValue().set(newAtkInfo.getEmail(),refreshToken, rtkValidity, TimeUnit.SECONDS);
-        TokenResponse token = new TokenResponse(newAtk, refreshToken);
-        return token;
+        System.out.println(newAtk);
+        redisTemplate.rename(atk, newAtk);
+        System.out.println(redisTemplate.opsForValue().get(newAtk));
+        return new TokenResponse(newAtk, refreshToken);
     }
 }
