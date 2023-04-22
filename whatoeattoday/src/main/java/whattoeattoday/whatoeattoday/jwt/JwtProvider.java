@@ -62,8 +62,8 @@ private final RedisTemplate redisTemplate;
                 .compact();
     }
     public String extractToken(String authorizationHeader){
-        return authorizationHeader.equals("")
-                ? authorizationHeader : authorizationHeader.substring("Bearer ".length());
+            return authorizationHeader.equals("")
+                    ? authorizationHeader : authorizationHeader.substring("Bearer " .length());
 
     }
     public boolean isUsable(String token){
@@ -99,7 +99,7 @@ private final RedisTemplate redisTemplate;
     }
     public TokenResponse reissuedAtk(String atk)throws JsonProcessingException{
         if(Objects.isNull(atk)) throw new Error("인증 정보가 만료되었습니다.");
-        System.out.println("atk "+atk);
+        System.out.println("atk"+atk);
         String refreshToken = (String)redisTemplate.opsForValue().get(atk);
         System.out.println("rtk "+refreshToken);
         if(refreshToken  == null) throw new Error("리프레시 토큰이 없습니다.");
