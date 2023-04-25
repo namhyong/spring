@@ -10,9 +10,11 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -23,7 +25,7 @@ import whattoeattoday.whatoeattoday.service.UserService;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig  {
 
     private final UserService userService;
     private final JwtProvider jwtProvider;
@@ -32,16 +34,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
-    @Override
-    public void configure(WebSecurity web) throws Exception{
-        web.ignoring().antMatchers("/css/**", "/js/**","img/**","/lib/**");
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() throws Exception{
+       return(web)-> web.ignoring().antMatchers("/css/**", "/js/**","img/**","/lib/**");
     }
-    @Override
-    protected  void configure(HttpSecurity http) throws  Exception{
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws  Exception{
         http.authorizeRequests()
-                .antMatchers("/user/login","user/signup").permitAll()
-                .antMatchers(HttpMethod.POST,"/user/login").permitAll()
-                .anyRequest().permitAll();
+                .antMatchers("/auth/**").permitAll()
+                .antMatchers(HttpMethod.POST,"/auth/login").permitAll()
+                .anyRequest().authenticated();
         http.logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/")
@@ -54,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider,userService), UsernamePasswordAuthenticationFilter.class)
                 .formLogin().disable();
-
+        return http.build();
 //        http.exceptionHandling()
 //                .authenticationEntryPoint(jwtAuthenticationEntryPoint);
 //                .accessDeniedHandler(jwtAccessDeniedHandler);

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,9 +39,9 @@ private final RedisTemplate redisTemplate;
     protected void init(){
         jwtSecret = Base64.getEncoder().encodeToString(jwtSecret.getBytes());
     }
-    public TokenResponse createTokenByLoigin(Response response) throws JsonProcessingException {
-        Subject atkJwt = Subject.atk(response.getId(),response.getEmail(),response.getName());
-        Subject rtkJwt = Subject.rtk(response.getId(),response.getEmail(),response.getName());
+    public TokenResponse createTokenByLoigin(Neo4jProperties.Authentication authentication) throws JsonProcessingException {
+        Subject atkJwt = Subject.atk(authentication.getUsername());
+        Subject rtkJwt = Subject.rtk(authentication.getUsername());
         String atk = createToken(atkJwt, atkValidity);
         String rtk = createToken(rtkJwt, rtkValidity);
         redisTemplate.opsForValue().set(atk,rtk, rtkValidity, TimeUnit.MILLISECONDS);
@@ -50,9 +51,7 @@ private final RedisTemplate redisTemplate;
 
         //        String JwtStr = objectMapper.writeValueAsString(subject);
         Claims claims = Jwts.claims()
-                .setSubject(subject.getEmail())
-                .setIssuer(subject.getName())
-                .setId(String.valueOf(subject.getId()));
+                .setSubject(subject.getEmail());
         Date date = new Date();
         return Jwts.builder()
                 .setClaims(claims)
@@ -104,7 +103,7 @@ private final RedisTemplate redisTemplate;
         System.out.println("rtk "+refreshToken);
         if(refreshToken  == null) throw new Error("리프레시 토큰이 없습니다.");
         Subject rtkInfo = extractAllClaims(refreshToken);
-        Subject newAtkInfo = Subject.atk(rtkInfo.getId(),rtkInfo.getEmail(),rtkInfo.getName());
+        Subject newAtkInfo = Subject.atk(rtkInfo.getEmail());
         String newAtk = createToken(newAtkInfo, atkValidity);
         System.out.println(newAtk);
         redisTemplate.rename(atk, newAtk);
